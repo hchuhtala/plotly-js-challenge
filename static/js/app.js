@@ -69,6 +69,7 @@ function changePlots(newID) {
             type: 'bar',
             x: xValues,
             y: yValues,
+            text: labels,
             orientation: 'h'
         }];
 
@@ -85,7 +86,7 @@ function changePlots(newID) {
         var trace1 = {
             x: ids,
             y: values,
-            text: yValues,
+            text: labels,
             mode: 'markers',
             marker: {
               color: ids,
