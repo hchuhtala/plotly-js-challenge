@@ -1,34 +1,26 @@
 //init page
 function pageInit(){
-    populateDropDown()
-    changePlots(940)
+    console.log("run page init")
+    populateDropDown();
+    changePlots(940);
+    changeInfoPanel(940);
 }
 pageInit();
 
 //event handeler
 function optionChanged(newID) {
-    console.log(newID);
+    console.log(`running change to ${newID}`);
     changePlots(newID);
     changeInfoPanel(newID);
+    
 }
 
 function populateDropDown () {d3.json("static/samples.json").then((data) => {
 
     // console.log(data)
-    console.log("running page init")
+    console.log("populate dropdown")
     let names = data.names
-    // let values = data.samples[0].sample_values
-    // let ids = data.samples[0].otu_ids
-    // let labels = data.samples[0].otu_labels
-    // let info = data.metadata[0]
     // console.log(names)
-    // console.log(values)
-    // console.log(ids)
-    // console.log(labels)
-    // console.log("meta")
-    // console.log(info.id)
-
-    // let names =[940, 941, 943];
 
     //populate dropdown
     d3.select("select").selectAll("option")
@@ -44,9 +36,10 @@ function populateDropDown () {d3.json("static/samples.json").then((data) => {
 
 function changePlots(newID) {
 
+    console.log("running changePlots func")
     d3.json("static/samples.json").then((data) => {
 
-        console.log("running changePlot func")
+        console.log("running changePlots d3")
         //  console.log(data.samples)
         let info = data.metadata.filter(d => d.id == newID);
         console.log(info);
@@ -58,12 +51,9 @@ function changePlots(newID) {
         let ids = filteredData[0].otu_ids;
         let labels = filteredData[0].otu_labels;
 
-        // console.log(names)
         // console.log(values);
         // console.log(ids);
         // console.log(labels);
-
-
 
         //HORIZONTAL BAR CHART
 
@@ -89,6 +79,8 @@ function changePlots(newID) {
             showlegend: false,
           };        
         Plotly.newPlot('bar', hbdata, layout);
+
+        //BUBBLE CHART
 
         var trace1 = {
             x: ids,
@@ -120,61 +112,27 @@ function changePlots(newID) {
 
 function changeInfoPanel(newID) {
 
+    console.log("running info panel update")
     d3.json("static/samples.json").then((data) => {
-        //d3 is run last
-        console.log("running changeInfoPanel func")
+
+        console.log("running InfoPanel d3")
         //  console.log(data.samples)
         let info = data.metadata.filter(d => d.id == newID);
         console.log(info);
 
-    //Populate Info Panel
+        //repack key value pairs into arr
+        var obj = info[0];
+        var arr = [];
+        for (var key in obj) {
+            if (obj.hasOwnProperty(key)) {
+                arr.push(key + ': ' + obj[key]);
+            }
+        };
+        // console.log(arr);
 
-    keys = Object.keys(info[0]);
-    values = Object.values(info[0]);
-    console.log(values);
-
-    // d3.select("#sample-metadata").selectAll("div")
-    // .data(keys, values)
-    // .enter() // creates placeholder for new data
-    // .append("div") // appends a option to placeholder
-    // .classed("panel-body", true) // sets the class of the new div
-    // .text(function (keys, values) {
-    //     return `${keys}: ${values}`;
-    // });
-
-    d3.select("#sample-metadata").selectAll("div")
-    .data(info[0], keys)
-    .enter() // creates placeholder for new data
-    .append("div") // appends a option to placeholder
-    .classed("panel-body", true) // sets the class of the new div
-    .text(function (d, i) {
-        return `${d.i}:`;
-    });
-
-    // d3.select("#sample-metadata").selectAll("div")
-    // .data(info, keys)
-    // .enter() // creates placeholder for new data
-    // .append("div") // appends a option to placeholder
-    // .classed("panel-body", true) // sets the class of the new div
-    // .text(function (info, keys) {
-    //     return `${keys}: ${info.id}`;
-    // });
-
-
-//     // Populate table
-//     let tbody = d3.select("tbody");
-//     // console.log(data);
-
-//     data.forEach((ufoReport) => {
-//     let row = tbody.append("tr");
-//     Object.entries(ufoReport).forEach(([key, value]) => {
-//     let cell = row.append("td");
-//     cell.text(value);
-//   });
-// });
-
-
-
+        d3.select("#panel").selectAll("#sample-metadata")
+        .data(arr)
+        .text(arr => `${arr}`);
 
 
     });
